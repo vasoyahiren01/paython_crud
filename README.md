@@ -1,4 +1,4 @@
-## Crud Operation Using Flask server and mongo db.  
+## Crud Operation Using Flask server, jwt and mongo db.  
 
 ### install requirements
 ```sh
