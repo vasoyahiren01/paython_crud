@@ -41,7 +41,7 @@ fields = {
 | `PUT` | `http://127.0.0.1:5000/users/update/user_id`| Update One user|
 | `DELETE` | `http://127.0.0.1:5000/users/update/user_id`| Delete One user|
 | `POST` | `http://127.0.0.1:5000/upload/user_id`| update profile|
-| `DELETE` | `http://127.0.0.1:5000/users/login`| login|
+| `POST` | `http://127.0.0.1:5000/users/login`| login|
 
 ### Lets run the App
 ```sh
