@@ -46,5 +46,6 @@ fields = {
 
 ### Lets run the App
 ```sh
+cd .\src\
 python app.py
 ```
