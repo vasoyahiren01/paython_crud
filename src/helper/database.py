@@ -35,11 +35,10 @@ class Database(object):
         return found
 
     def find_one(self, criteria, collection_name, projection=None):  # find One from db
-
-        found = self.db[collection_name].find_one(criteria, projection=projection)
+        found = self.db[collection_name].find_one(filter=criteria, projection=projection)
 
         if found is None:
-            return not found
+            return {'_id': False}
 
         if "_id" in found:
             found["_id"] = str(found["_id"])
@@ -50,7 +49,7 @@ class Database(object):
         found = self.db[collection_name].find_one({"_id": ObjectId(id)})
         
         if found is None:
-            return not found
+            return {'_id': False}
         
         if "_id" in found:
              found["_id"] = str(found["_id"])

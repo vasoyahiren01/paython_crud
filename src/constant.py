@@ -1,5 +1,6 @@
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'bmp'}
 ALLOWED_STATUS = (100, 200, 201, 202, 300, 301, 302, 400, 401, 402, 500, 501, 502, 503)
+NOT_AUTH_API = ('/', '/users/login')
 
 OK = 1000
 DB_ERR = 1001

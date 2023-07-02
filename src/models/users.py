@@ -1,7 +1,5 @@
 from helper.validation import Validator
 from helper.database import Database
-
-
 class Users(object):
     def __init__(self):
         self.validator = Validator()
@@ -40,9 +38,8 @@ class Users(object):
     def find(self, users):  # find all
         return self.db.find(users, self.collection_name)
 
-    def find_one(self, users):  # find One
-        print('-----',users)
-        return self.db.find_one(users, self.collection_name)
+    def find_one(self, query):  # find One
+        return self.db.find_one(query, self.collection_name)
 
     def find_by_id(self, id):
         return self.db.find_by_id(id, self.collection_name)
