@@ -35,8 +35,8 @@ class Users(object):
         res = self.db.insert(users, self.collection_name)
         return "Inserted Id " + res
 
-    def find(self, users):  # find all
-        return self.db.find(users, self.collection_name)
+    def find(self, users, projection):  # find all
+        return self.db.find(users, self.collection_name, projection)
 
     def find_one(self, query):  # find One
         return self.db.find_one(query, self.collection_name)

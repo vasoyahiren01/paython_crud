@@ -1,10 +1,11 @@
 import time
 import os
-
+import json
 from flask import Flask, request, jsonify
 from models import users
 from cache import rds, make_token, rds_hmset
 import constant as cs
+from openpyxl import Workbook
 
 users = users.Users()
 def extendApplication(app):
@@ -73,6 +74,34 @@ def extendApplication(app):
         if request.method == "DELETE":
             users.delete(user_id)
             return "Record Deleted"
+        
+    @app.route('/users/download', methods=['POST'])
+    def download_users():
+        if request.method == "POST":
+            userList = users.find({}, {"_id":0, "name":1, "email":1, "mobile":1, "password": 1})
+            print('-----',userList)
+            json_data = json.dumps(userList)
+            data = json.loads(json_data)
+
+            # Create a new Workbook
+            wb = Workbook()
+
+            # Select the active worksheet
+            ws = wb.active
+
+            # Write header row
+            header = list(data[0].keys())
+            ws.append(header)
+
+            # Write data rows
+            for item in data:
+                row = [item[key] for key in header]
+                ws.append(row)
+
+            # Save the workbook
+            wb.save("example.xlsx")
+
+            return "download sucess"
 
 def allowed_file(filename):
     tail = filename and '.' in filename and filename.rsplit('.', 1)[1]
