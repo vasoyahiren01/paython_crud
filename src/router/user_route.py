@@ -6,6 +6,7 @@ from models import users
 from cache import rds, make_token, rds_hmset
 import constant as cs
 from openpyxl import Workbook
+import pdfkit
 
 users = users.Users()
 def extendApplication(app):
@@ -75,7 +76,7 @@ def extendApplication(app):
             users.delete(user_id)
             return "Record Deleted"
         
-    @app.route('/users/download', methods=['POST'])
+    @app.route('/users/downloadExcel', methods=['POST'])
     def download_users():
         if request.method == "POST":
             userList = users.find({}, {"_id":0, "name":1, "email":1, "mobile":1, "password": 1})
@@ -102,6 +103,19 @@ def extendApplication(app):
             wb.save("example.xlsx")
 
             return "download sucess"
+        
+    @app.route('/users/downloadPDF', methods=['POST'])
+    def download_pdf():
+        if request.method == "POST":
+            # install wkhtmltopdf and Specify the correct path to wkhtmltopdf.exe
+            config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+
+            # Replace 'demo.html' with the actual path to your HTML file
+            pdfkit.from_file('D:\\python_crud\\src\\router\\demo.html', 'out.pdf', configuration=config)
+            print("PDF generated successfully!")
+
+            return "download success"
+
 
 def allowed_file(filename):
     tail = filename and '.' in filename and filename.rsplit('.', 1)[1]
