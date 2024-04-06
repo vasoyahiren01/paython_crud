@@ -2,7 +2,7 @@ __author__ = "Hiren Vasoya"
 __date__ = "2023-06-06"
 __version__ = '1.0.0'
 import jwt
-
+import os  # Import the os module to access environment variables
 from flask import Flask, request, jsonify
 from models import users  # call model file
 from flask_cors import CORS  # to avoid cors error in different frontend like react js or any other
@@ -35,4 +35,5 @@ def before_request():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = os.environ.get('PORT', 5000)  # Get the port number from the environment variable 'PORT' or use 5000 as default
+    app.run(debug=True, port=port)  # Pass the port argument to the run method
