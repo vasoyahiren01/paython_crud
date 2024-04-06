@@ -42,6 +42,8 @@ fields = {
 | `DELETE` | `http://127.0.0.1:5000/users/update/user_id`| Delete One user|
 | `POST` | `http://127.0.0.1:5000/upload/user_id`| update profile|
 | `POST` | `http://127.0.0.1:5000/users/login`| login|
+| `POST` | `http://127.0.0.1:5000/users/downloadExcel`| Create users Excel|
+| `POST` | `http://127.0.0.1:5000/users/downloadPDF`| PDF from html|
 
 ### Lets run the App
 ```sh
