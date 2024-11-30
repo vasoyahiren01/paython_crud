@@ -7,7 +7,7 @@ from cache import rds, make_token, rds_hmset
 import constant as cs
 from openpyxl import Workbook
 import pdfkit
-
+from PyPDF2 import PdfReader, PdfWriter
 users = users.Users()
 def extendApplication(app):
     @app.route('/users/login', methods=['POST'])
@@ -16,6 +16,8 @@ def extendApplication(app):
             email = request.json.get('email')
             password = request.json.get('password')
             res = users.find_one({'email': email, 'password': password});
+            print(email, password)
+
             if res['_id'] is False:
                 return jsonify({'message': 'invalid email or password'}), 404
 
@@ -112,6 +114,31 @@ def extendApplication(app):
 
             # Replace 'demo.html' with the actual path to your HTML file
             pdfkit.from_file('D:\\python_crud\\src\\router\\demo.html', 'out.pdf', configuration=config)
+
+            input_pdf = "out.pdf"  # Path to your input PDF
+            output_pdf = "out.pdf"  # Path to save the encrypted PDF
+
+            # Set passwords
+            user_password = "1234"  # Open key (user password)
+            owner_password = "5678"  # Owner password (can remove restrictions)
+
+            # Read the PDF
+            reader = PdfReader(input_pdf)
+            writer = PdfWriter()
+
+            # Copy all pages to the writer
+            for page in reader.pages:
+                writer.add_page(page)
+
+            # Set encryption with the passwords
+            writer.encrypt(user_password=user_password, owner_password=owner_password)
+
+            # Write the output PDF
+            with open(output_pdf, "wb") as file:
+                writer.write(file)
+
+            print(f"Encrypted PDF saved as '{output_pdf}' with an open key.")
+
             print("PDF generated successfully!")
 
             return "download success"

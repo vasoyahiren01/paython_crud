@@ -28,3 +28,9 @@ REDIS_HOST2 = '127.0.0.1'
 REDIS_PORT2 = 6379
 REDIS_PWD2 = 'XXX'
 REDIS_URL_REQUEST = 'redis://:%s@%s:%s/%s' % (REDIS_PWD2, REDIS_HOST2, REDIS_PORT2, REDIS_DB2)
+
+QUEUE_NAMES = [
+    "bull:excelQueue",
+    "bull:imageQueue",
+    "bull:pdfQueue",
+]

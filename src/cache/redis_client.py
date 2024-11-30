@@ -4,6 +4,9 @@ import constant as cs
 import jwt
 rds = redis.Redis(host=cs.REDIS_HOST, port=cs.REDIS_PORT, password=cs.REDIS_PWD, db=cs.REDIS_DB, socket_timeout=3000)
 
+def get_redis_client():
+    return redis.StrictRedis(host="localhost", port=6379, decode_responses=True)
+
 
 def rds_hmset(key, value, expire=3600):
     rds.set(key, value)

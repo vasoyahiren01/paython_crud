@@ -8,7 +8,8 @@ from models import users  # call model file
 from flask_cors import CORS  # to avoid cors error in different frontend like react js or any other
 from router.user_route import extendApplication
 import constant as cs
-
+import threading
+from task_queue.job_manager import QueueManager
 
 app = Flask(__name__)
 CORS(app)
@@ -16,6 +17,22 @@ CORS(app)
 users = users.Users()
 extendApplication(app)
 
+
+def start_workers():
+    """
+    Start threads for all queues.
+    """
+    queue_manager = QueueManager(cs.QUEUE_NAMES)
+    threads = []
+
+    for queue_name in cs.QUEUE_NAMES:
+        thread = threading.Thread(target=queue_manager.process_queue, args=(queue_name,))
+        thread.daemon = True  # Ensure threads close when the Flask app stops
+        threads.append(thread)
+        thread.start()
+
+    print("All workers are running.")
+    return threads
 
 @app.before_request
 def before_request():
@@ -35,5 +52,8 @@ def before_request():
 
 
 if __name__ == '__main__':
+    start_workers()
     port = os.environ.get('PORT', 5000)  # Get the port number from the environment variable 'PORT' or use 5000 as default
+    print(f"Starting Flask app on port {port}...")
     app.run(debug=True, port=port)  # Pass the port argument to the run method
+    
