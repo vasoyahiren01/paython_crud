@@ -43,7 +43,7 @@ fields = {
 | `POST` | `http://127.0.0.1:5000/upload/user_id`| update profile|
 | `POST` | `http://127.0.0.1:5000/users/login`| login|
 | `POST` | `http://127.0.0.1:5000/users/downloadExcel`| Create users Excel|
-| `POST` | `http://127.0.0.1:5000/users/downloadPDF`| PDF from html|
+| `POST` | `http://127.0.0.1:5000/users/downloadPDF`| PDF(protected) from html|
 
 ### Lets run the App
 ```sh
