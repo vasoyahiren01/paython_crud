@@ -1,11 +1,11 @@
 from helper.validation import Validator
 from helper.database import Database
-class Users(object):
+
+class Users:
     def __init__(self):
         self.validator = Validator()
         self.db = Database()
-
-        self.collection_name = 'users'  # collection name
+        self.collection_name = 'users'
 
         self.fields = {
             "name": "string",
@@ -19,37 +19,25 @@ class Users(object):
         }
 
         self.create_required_fields = ["name", "mobile", "email", "password"]
-
-        # Fields optional for CREATE
-        self.create_optional_fields = []
-
-        # Fields required for UPDATE
         self.update_required_fields = ["name", "mobile"]
 
-        # Fields optional for UPDATE
-        self.update_optional_fields = []
+    def create(self, user_data):
+        self.validator.validate(user_data, self.fields, self.create_required_fields)
+        res = self.db.insert(user_data, self.collection_name)
+        return {"message": "User created", "id": res}
 
-    def create(self, users):
-        # Validator will throw error if invalid
-        self.validator.validate(users, self.fields, self.create_required_fields, self.create_optional_fields)
-        res = self.db.insert(users, self.collection_name)
-        return "Inserted Id " + res
+    def find(self, query, projection=None):
+        return self.db.find(query, self.collection_name, projection)
 
-    def find(self, users, projection):  # find all
-        return self.db.find(users, self.collection_name, projection)
-
-    def find_one(self, query):  # find One
+    def find_one(self, query):
         return self.db.find_one(query, self.collection_name)
 
-    def find_by_id(self, id):
-        return self.db.find_by_id(id, self.collection_name)
+    def find_by_id(self, user_id):
+        return self.db.find_by_id(user_id, self.collection_name)
 
-    def update(self, id, users):
-        self.validator.validate(users, self.fields, self.update_required_fields, self.update_optional_fields)
-        return self.db.update(id, users,self.collection_name)
+    def update(self, user_id, user_data):
+        self.validator.validate(user_data, self.fields, self.update_required_fields)
+        return self.db.update(user_id, user_data, self.collection_name)
 
-    def updateOne(self, id, users):
-        return self.db.update(id, users,self.collection_name)
-
-    def delete(self, id):
-        return self.db.delete(id, self.collection_name)
+    def delete(self, user_id):
+        return self.db.delete(user_id, self.collection_name)

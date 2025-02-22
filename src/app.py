@@ -10,6 +10,10 @@ from router.user_route import extendApplication
 import constant as cs
 import threading
 from task_queue.job_manager import QueueManager
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
 CORS(app)
@@ -31,29 +35,30 @@ def start_workers():
         threads.append(thread)
         thread.start()
 
-    print("All workers are running.")
+    logging.info("All workers are running.")
     return threads
 
 @app.before_request
 def before_request():
-    # print('url: %s ,data: %s' % (request.path, request.values.to_dict()), extra={"type": request.method})
     if request.path not in cs.NOT_AUTH_API:
         token = request.headers.get('Authorization')
         if token:
-            payload = jwt.decode(token, "secret", algorithms=["HS256"])
-            if payload['_id']:
+            try:
+                payload = jwt.decode(token, os.environ.get('JWT_SECRET', 'secret'), algorithms=["HS256"])
                 user_obj = users.find_by_id(payload['_id'])
-                if user_obj['_id'] == False:
-                    return jsonify({'message': 'user Not found'}), 404
-            else:
-                return jsonify({'message': 'invalid token or token has been expired'}), 404
+                if not user_obj:
+                    return jsonify({'message': 'User not found'}), 404
+            except jwt.ExpiredSignatureError:
+                return jsonify({'message': 'Token has expired'}), 401
+            except jwt.InvalidTokenError:
+                return jsonify({'message': 'Invalid token'}), 401
         else:
-            return jsonify({'message': 'Unauthorized'}), 404
+            return jsonify({'message': 'Unauthorized'}), 401
 
 
 if __name__ == '__main__':
     start_workers()
     port = os.environ.get('PORT', 5000)  # Get the port number from the environment variable 'PORT' or use 5000 as default
-    print(f"Starting Flask app on port {port}...")
+    logging.info(f"Starting Flask app on port {port}...")
     app.run(debug=True, port=port)  # Pass the port argument to the run method
     
