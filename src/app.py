@@ -11,6 +11,7 @@ import constant as cs
 import threading
 from task_queue.job_manager import QueueManager
 import logging
+from typing import List
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -18,11 +19,11 @@ logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
 CORS(app)
 
-users = users.Users()
+users_instance = users.Users()
 extendApplication(app)
 
 
-def start_workers():
+def start_workers() -> List[threading.Thread]:
     """
     Start threads for all queues.
     """
@@ -39,13 +40,13 @@ def start_workers():
     return threads
 
 @app.before_request
-def before_request():
+def before_request() -> None:
     if request.path not in cs.NOT_AUTH_API:
         token = request.headers.get('Authorization')
         if token:
             try:
                 payload = jwt.decode(token, os.environ.get('JWT_SECRET', 'secret'), algorithms=["HS256"])
-                user_obj = users.find_by_id(payload['_id'])
+                user_obj = users_instance.find_by_id(payload['_id'])
                 if not user_obj:
                     return jsonify({'message': 'User not found'}), 404
             except jwt.ExpiredSignatureError:
@@ -58,7 +59,7 @@ def before_request():
 
 if __name__ == '__main__':
     start_workers()
-    port = os.environ.get('PORT', 5000)  # Get the port number from the environment variable 'PORT' or use 5000 as default
+    port = int(os.environ.get('PORT', 5000))  # Ensure port is an integer
     logging.info(f"Starting Flask app on port {port}...")
     app.run(debug=True, port=port)  # Pass the port argument to the run method
     
